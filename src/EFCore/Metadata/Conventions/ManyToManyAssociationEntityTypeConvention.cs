@@ -98,14 +98,19 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Conventions
             var model = declaringEntityType.Model;
 
             // create the association entity type
-            var otherIdentifiers = model.GetEntityTypes().ToDictionary(et => et.Name, et => 0);
-            var associationEntityTypeName = Uniquifier.Uniquify(
-                string.Format(
+            var associationEntityTypeName = string.Format(
                     AssociationEntityTypeNameTemplate,
                     declaringEntityType.ShortName(),
-                    inverseEntityType.ShortName()),
-                otherIdentifiers,
-                int.MaxValue);
+                    inverseEntityType.ShortName());
+            if (model.FindEntityType(associationEntityTypeName) != null)
+            {
+                var otherIdentifiers = model.GetEntityTypes().ToDictionary(et => et.Name, et => 0);
+                associationEntityTypeName = Uniquifier.Uniquify(
+                    associationEntityTypeName,
+                    otherIdentifiers,
+                    int.MaxValue);
+            }
+
             //TODO #9914 - when the shared-type entity type version of model.Entity() is available call that instead
             var associationEntityTypeBuilder =
                 model.AddEntityType(

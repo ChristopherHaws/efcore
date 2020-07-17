@@ -3149,7 +3149,7 @@ namespace Microsoft.EntityFrameworkCore.Metadata.Internal
                             return null;
                         }
 
-                        var newOtherOwnership = otherOwnership.Builder.IsWeakTypeDefinition(configurationSource);
+                        var newOtherOwnership = otherOwnership.Builder.AddToDeclaringTypeDefinition(configurationSource);
                         if (newOtherOwnership == null)
                         {
                             return null;
